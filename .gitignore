@@ -1,0 +1,25 @@
+# C언어 컴파일 결과물
+*.exe
+*.o
+*.obj
+*.out
+*.a
+*.dll
+
+# 디버깅 파일
+*.pdb
+*.ilk
+
+# 빌드 폴더
+build/
+debug/
+release/
+
+# 임시 파일
+*.tmp
+*.log
+*~
+
+# 운영체제 임시 파일
+.DS_Store
+Thumbs.db
