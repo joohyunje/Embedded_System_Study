@@ -8,7 +8,7 @@ static void Sys_Init(int baud)
 	setvbuf(stdout, NULL, _IONBF, 0);
 }
 
-#if 1
+#if 0
 
 #define GPIOA_MODER		(*(unsigned long *)0x40020000)
 #define GPIOA_OTYPER	(*(unsigned long *)0x40020004)
@@ -22,7 +22,7 @@ void Main(void)
 	GPIOA_MODER = 0x1 << 10;
 	GPIOA_OTYPER = 0x0 << 5;
 
-	int i;
+	volatile int i;
 
 	for(;;)
 	{
@@ -36,7 +36,7 @@ void Main(void)
 
 #endif
 
-#if 0
+#if 1
 
 #define TIMER   (*(unsigned long *)0xE000E018)
 
