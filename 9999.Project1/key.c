@@ -1,13 +1,12 @@
 #include "device_driver.h"
 
-#define KEY   7//13
+#define KEY   7
 
 void Key_Poll_Init(void)
 {
 	Macro_Set_Bit(RCC->AHB1ENR, 2); 
 	Macro_Write_Block(GPIOC->MODER, 0x3, 0x0, KEY*2);
-	// KEY(PC7) 내부 Pull-Up 설정
-	Macro_Write_Block(GPIOC->PUPDR,0x3,0x1,14);
+	Macro_Write_Block(GPIOC->PUPDR,0x3,0x1,KEY*2);
 }
 
 /* 0: 디버깅용 설정 */
