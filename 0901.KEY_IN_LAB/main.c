@@ -69,7 +69,7 @@ void Main(void)
 
 #endif
 
-#if 1
+#if 0
 
 void Main(void)
 {
@@ -90,6 +90,38 @@ void Main(void)
 		unsigned int key = 	Macro_Extract_Area(~GPIOC->IDR,0x1,7);	
 		
 		Macro_Write_Block(GPIOA->ODR,0x1,key,5);
+	}
+}
+
+#endif
+
+#if 1
+
+void Main(void)
+{
+	Sys_Init(115200);
+	printf("KEY Input Test #1\n");
+
+	/* 아래 코드 수정 금지 : Port-C Clock Enable */
+	Macro_Set_Bit(RCC->AHB1ENR, 2); 
+
+	// KEY(PC7)을 GPIO 입력으로 선언
+	Macro_Write_Block(GPIOC->MODER,0x3,0x0,14);
+
+	// KEY(PC7) 내부 Pull-Up 설정
+	Macro_Write_Block(GPIOC->PUPDR,0x3,0x1,14);
+
+	int flag =0;
+	
+	for(;;)
+	{
+		//toggling 
+		if(Macro_Check_Bit_Clear(GPIOC->IDR,7)&&(flag==0)){
+			Macro_Invert_Bit(GPIOA->ODR,5);
+			flag =1;
+		}else if(Macro_Check_Bit_Set(GPIOC->IDR,7) && (flag ==1)){
+			flag = 0;
+		}
 	}
 }
 

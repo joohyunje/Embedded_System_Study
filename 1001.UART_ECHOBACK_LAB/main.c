@@ -10,20 +10,26 @@ static void Sys_Init(int baud)
 	LED_Init();
 }
 
-#if 1
+#if 0
 
 void Main(void)
 {
 	Sys_Init(115200);
-	printf("UART2 TX Test\n");
-	
+	// printf("UART2 TX Test\n");
+	// printf("\n");
 	// A, B, C를 차례로 UART로 출력하는 코드 구현
+	while(!Macro_Check_Bit_Set(USART2->SR,7));
+	USART2->DR = 'A';
+	while(!Macro_Check_Bit_Set(USART2->SR,7));
+	USART2->DR = 'B';
+	while(!Macro_Check_Bit_Set(USART2->SR,7));
+	USART2->DR = 'C';
 
 }
 
 #endif
 
-#if 0
+#if 1
 
 void Main(void)
 {
@@ -35,6 +41,10 @@ void Main(void)
 		unsigned char x;
 
 		// PC에서 받은 글자를 다시 되돌려 보내는 코드 구현
+		while(!Macro_Check_Bit_Set(USART2->SR,5));
+		x = USART2->DR;
+		while(!Macro_Check_Bit_Set(USART2->SR,7));
+		USART2->DR = x;
 
 		
 	}

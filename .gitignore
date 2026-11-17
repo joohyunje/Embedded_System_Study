@@ -1,10 +1,13 @@
-# C언어 컴파일 결과물
+# 컴파일 결과물
 *.exe
 *.o
 *.obj
 *.out
 *.a
 *.dll
+*.elf
+*.bin
+*.map
 
 # 디버깅 파일
 *.pdb
@@ -23,3 +26,7 @@ release/
 # 운영체제 임시 파일
 .DS_Store
 Thumbs.db
+
+#덤프 파일
+__dump.txt
+__dump_all.txt
