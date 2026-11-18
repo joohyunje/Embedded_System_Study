@@ -12,14 +12,13 @@ static void Sys_Init(int baud)
     setvbuf(stdout, NULL, _IONBF, 0);
 	LED_Init();
 	Motor_Init();
+	Key_Poll_Init();
 }
 
 static void Key_Event_Handler(void)
 {
     static int flag = 0;
     int key = Key_Get_Pressed();
-
-    // UART에 수신된 문자가 있을 때만 읽는다고 가정
 
     if(flag == 0 && key)
     {
@@ -64,22 +63,23 @@ static void Op_Handler(EVENT event){
 	switch (event)
 	{
 	case EVENT_KEY:
-		if(Status !=EVENT_STOP){
+		if(Status ==EVENT_KEY){
 			Motor_Invert();
 		}
 		printf("keykey\n");
+		Status = EVENT_KEY;
+
 		break;
 
 	case EVENT_STOP:
 		Motor_S();
 		Status = EVENT_STOP;
 	    printf("Motor Stop\n");
-		
 		break;
 		
 	case EVENT_FORWARD:
 		
-		if((Status == EVENT_REVERSE) || (Status == EVENT_KEY))
+		if((Status == EVENT_REVERSE))
 		{
 			Motor_Invert();
 		}	
@@ -90,12 +90,11 @@ static void Op_Handler(EVENT event){
 		
 		Status = EVENT_FORWARD;
 	    printf("Motor Forward\n");
-		
 		break;
 		
 	case EVENT_REVERSE:
 		
-		if((Status == EVENT_FORWARD) || (Status == EVENT_KEY))
+		if((Status == EVENT_FORWARD))
 		{
 			Motor_Invert();
 		}	
@@ -108,14 +107,11 @@ static void Op_Handler(EVENT event){
     	printf("Motor Reverse\n");
 		
 		break;	
-	
-		
+
 	default:
 		break;
 	}
-	
 	Event = EVENT_NONE;
-	
 }
 
 
@@ -127,8 +123,11 @@ void Main(void)
 
 	for(;;){
 
-		Key_Event_Handler();
-		Uart_Event_Handler();
+		// if(Key_Get_Pressed()){
+			Key_Event_Handler();
+		// }else if(Macro_Check_Bit_Set(USART2->SR,5)){
+			Uart_Event_Handler();
+		// }
 		Op_Handler(Event);
 
 	}

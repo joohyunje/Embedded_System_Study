@@ -22,7 +22,7 @@ void Main(void)
 
 	Key_ISR_Enable(1);
 	Uart2_RX_Interrupt_Enable(1);
-	TIM4_Repeat_Interrupt_Enable(1, 200);
+	TIM4_Repeat_Interrupt_Enable(1, 2000);
 
 	int d = 0;
 
@@ -30,20 +30,18 @@ void Main(void)
 	{
 		if(Key_Pressed)
 		{
-			printf("KEY Pressed!!!\n");
+			if(Key_Pressed == 1) printf("short");
+			else printf("long\n");
 			Key_Pressed = 0;
+			
 		}
 
 		if(Uart_Data_In)
 		{
 			printf("RX Data = %c\n", Uart_Data);
 			Uart_Data_In = 0;
+			
 		}		
-
-		if(TIM4_Expired)
-	    {
-			LED_Display(d ^= 1);
-			TIM4_Expired = 0;
-	    }
+		
 	}
 }

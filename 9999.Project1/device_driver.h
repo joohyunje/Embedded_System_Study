@@ -5,7 +5,8 @@
 
 typedef enum{
 	EVENT_NONE,
-	EVENT_KEY,
+	EVENT_KEY_Short,
+	EVENT_KEY_Long,
 	EVENT_STOP,
 	EVENT_FORWARD,
 	EVENT_REVERSE
@@ -33,14 +34,14 @@ extern void Key_Poll_Init(void);
 extern int Key_Get_Pressed(void);
 extern void Key_Wait_Key_Released(void);
 extern void Key_Wait_Key_Pressed(void);
+extern void Key_ISR_Enable(int en);
 
 // Motor.c
 
 extern void Motor_Init(void);
-extern void Motor_S(void);
-extern void Motor_R(void);
-extern void Motor_F(void);
-extern void Motor_Invert(void);
+extern void Motor_SC(int turn,unsigned short duty);
+extern void Motor_Stop(void);
+
 
 
 // Timer.c
