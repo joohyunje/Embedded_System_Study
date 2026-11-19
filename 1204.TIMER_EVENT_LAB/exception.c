@@ -3,7 +3,7 @@
 
 void _Invalid_ISR(void)
 {
-	unsigned int r = Macro_Extract_Area(SCB->ICSR, 0x1ff, 0);
+    unsigned int r = Macro_Extract_Area(SCB->ICSR, 0x1ff, 0);
 	printf("\nInvalid_Exception: %d!\n", r);
 	printf("Invalid_ISR: %d!\n", r - 16);
 	for(;;);
@@ -15,7 +15,6 @@ extern volatile unsigned char Uart_Data;
 extern volatile int TIM4_Expired;
 extern volatile int Uart_Data_In;
 extern volatile unsigned char Uart_Data;
-extern volatile int TIM4_Expired;
 
 void TIM4_IRQHandler(void)
 {
@@ -67,8 +66,6 @@ void EXTI9_5_IRQHandler(void)
     }
 }
 		
-	extern volatile int Uart_Data_In;
-extern volatile unsigned char Uart_Data;
 
 void USART2_IRQHandler(void)
 {

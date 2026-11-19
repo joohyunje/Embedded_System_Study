@@ -9,69 +9,75 @@ void _Invalid_ISR(void)
 	for(;;);
 }
 
-volatile int TIM4_Expired = 0;
+extern volatile int TIM4_Expired;
+extern volatile int Key_Pressed;
+
+void TIM4_IRQHandler(void)
+{
+	Macro_Clear_Bit(TIM4->SR,0);
+	NVIC_ClearPendingIRQ(30);
+
+	TIM4_Expired = 1;
+}
 
 void EXTI9_5_IRQHandler(void)
 {
+    static int Key_State = 0;
+
     if(EXTI->PR & (1 << 7))
     {
-        // 버튼 누름 
-        if(Macro_Check_Bit_Clear(GPIOC->IDR, 7))
+        unsigned int i, k;
+
+        for(;;)
         {
+            k = Macro_Check_Bit_Clear(GPIOC->IDR, 7);
+
+            for(i = 0; i < 20000; i++)
+            {
+                if(k != Macro_Check_Bit_Clear(GPIOC->IDR, 7))
+                    break;
+            }
+
+            if(i == 20000) break;
+        }
+
+        if(k && Key_State == 0)
+        {
+            Key_State = 1;
             TIM4_Expired = 0;
 
             Macro_Clear_Bit(TIM4->CR1, 0);
             TIM4->CNT = 0;
 
-            // 타이머 인터럽트초기화
             Macro_Clear_Bit(TIM4->SR, 0);
             NVIC_ClearPendingIRQ(TIM4_IRQn);
 
-            // TIM4 시작
             Macro_Set_Bit(TIM4->CR1, 0);
         }
-        else
+
+        else if(!k && Key_State == 1)
         {
-            // TIM4 정지
+            Key_State = 0;
+
             Macro_Clear_Bit(TIM4->CR1, 0);
 
             if(TIM4_Expired || (TIM4->SR & 1))
-            {
-                Key_Pressed = 2;  // Long
-            }
+                Key_Pressed = 2;
             else
-            {
-                Key_Pressed = 1;  // Short
-            }
+                Key_Pressed = 1;
         }
 
-        // EXTI7 Pending Clear
         EXTI->PR = (1 << 7);
-		NVIC_ClearPendingIRQ(23);
+        NVIC_ClearPendingIRQ(23);
     }
 }
 
-void TIM4_IRQHandler(void)
+extern volatile int Uart_Data_In;
+extern volatile unsigned char Uart_Data;
+
+void USART2_IRQHandler(void)
 {
-	Macro_Clear_Bit(TIM4->SR, 0);
-	NVIC_ClearPendingIRQ(30);
-	TIM4_Expired = 1;
-}
-
-volatile int DMA2_STREAM0_DONE = 0;
-
-void DMA2_Stream0_IRQHandler(void)
-{
-	DMA2->LIFCR = 0x3F << 0;
-	NVIC_ClearPendingIRQ(56);
-    DMA2_STREAM0_DONE = 1;
-}
-
-volatile int DMA1_STREAM6_DONE = 0;
-
-void DMA1_Stream6_IRQHandler(void)
-{
-	DMA1->HIFCR = 0x3F << 16;
-	NVIC_ClearPendingIRQ(17);
-    DMA1_STREAM6_DONE = 1;
+	Uart_Data = (unsigned char)USART2->DR;
+	Uart_Data_In = 1;
+	NVIC_ClearPendingIRQ(38);
 }
