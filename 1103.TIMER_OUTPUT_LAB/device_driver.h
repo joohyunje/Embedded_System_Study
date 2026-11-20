@@ -49,3 +49,8 @@ extern void TIM4_Change_Value(int time);
 extern void TIM3_Out_Init(void);
 extern void TIM3_Out_Freq_Generation(unsigned short freq);
 extern void TIM3_Out_Stop(void);
+
+//buzzer.c
+
+extern void Buzzer_Beep(unsigned char tone, int duration);
+extern void Melody(int status);

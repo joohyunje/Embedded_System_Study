@@ -17,3 +17,11 @@ extern void Motor_Init(void);
 extern void Motor_SC(int turn,unsigned int duty);
 
 extern void TIM4_Repeat_Interrupt_Enable(int en, int time);
+extern void TIM3_Out_Init(void);
+extern void TIM3_Out_Freq_Generation(unsigned short freq);
+extern void TIM3_Out_Stop(void);
+extern void TIM2_Delay(int time);
+
+
+extern void Buzzer_Beep(unsigned char tone, int duration);
+extern void Melody(int status);

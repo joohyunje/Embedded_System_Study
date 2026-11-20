@@ -42,17 +42,19 @@ void Main(void)
 				else if(status == Reverse){
 					status = Forward;
 				}
-				printf("[Button] Short press | Direction: %s | PWM duty: %d%%\n",
+				printf("[Button] Short press , Direction: %s , PWM duty: %d%%\n",
 					status == Forward ? "Forward" : "Reverse", duty);
 			}
 			else if(Key_Pressed ==2){
 				if(status == Stop && Start_flag ==0){
 					Start_flag =1;
 					Uart_Data = 0;
+					Melody(Start_flag);
 				}
 				else {
 					status = Stop;
 					Start_flag =0;
+					Melody(Start_flag);
 				}
 				printf("[Button] Long press | %s\n", Start_flag
 					? "Motor control enabled. Press F or R to start."
@@ -60,39 +62,62 @@ void Main(void)
 			}
 			Motor_SC(status,duty);
 		}
-		if(Uart_Data_In && Start_flag ==1)
-        {
-            if ((Uart_Data >= '1') && (Uart_Data <= '9') && (status !=Stop))
-            {
-                int value = Uart_Data - '0';
-                duty = 50 + (value - 1) * 50 / 8;
-                printf("[Motor] PWM duty set to %d%%\n", duty);
-            }
-            else{
-				switch(Uart_Data)
-				{
-					case 's':
-					case 'S':
-						status = Stop;
-						printf("[Motor] Stopped\n");
-						break;
-					case 'f':
-					case 'F':
-						status = Forward;
-						printf("[Motor] Forward | PWM duty: %d%%\n", duty);
-						break;
-					case 'r':
-					case 'R':
-						printf("[Motor] Reverse | PWM duty: %d%%\n", duty);
-						status = Reverse;
-						break;
-					default:
-						break;
-				}
+		if(Uart_Data_In)
+		{
+			if (Uart_Data == '?' && Start_flag == 0)
+			{
+				printf("[Status] Control: %s | Direction: %s\n",
+					Start_flag ? "Enabled" : "Disabled",
+					status == Forward ? "Forward" :
+					status == Reverse ? "Reverse" : "Stopped");
+					Uart_Data_In = 0;
 			}
-			Uart_Data_In = 0;
-			Motor_SC(status,duty);
-        }
+			else if(Start_flag == 1)
+			{
+				
+				
+				if ((Uart_Data >= '1') && (Uart_Data <= '9') && (status !=Stop))
+				{
+					int value = Uart_Data - '0';
+					duty = 50 + (value - 1) * 50 / 8;
+					printf("[Motor] PWM duty set to %d%%\n", duty);
+				}
+				else{
+					switch(Uart_Data)
+					{
+						case 's':
+						case 'S':
+							status = Stop;
+							printf("[Motor] Stopped\n");
+							break;
+						case 'f':
+						case 'F':
+							status = Forward;
+							printf("[Motor] Forward | PWM duty: %d%%\n", duty);
+							break;
+						case 'r':
+						case 'R':
+							printf("[Motor] Reverse | PWM duty: %d%%\n", duty);
+							status = Reverse;
+							break;
+						case '?':
+							printf("[Status] Control: %s | Direction: %s | Duty: %d%%\n",
+								Start_flag ? "Enabled" : "Disabled",
+								status == Forward ? "Forward" :
+								status == Reverse ? "Reverse" : "Stopped",
+								duty);
+						default:
+							break;
+					}
+				}
+				Uart_Data_In = 0;
+				Motor_SC(status,duty);
+				
+			}
+
+		}
+
+		
 		Key_Pressed = 0;
 		LED_state(status);
     }

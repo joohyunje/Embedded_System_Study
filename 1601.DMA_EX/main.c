@@ -11,7 +11,7 @@ static void Sys_Init(int baud)
 	LED_Init();
 }
 
-#if 1
+#if 0
 
 extern volatile int TIM4_Expired;
 
@@ -154,7 +154,7 @@ void Main(void)
 
 #endif
 
-#if 0
+#if 1
 
 extern volatile int TIM4_Expired;
 extern volatile int DMA1_STREAM6_DONE;
